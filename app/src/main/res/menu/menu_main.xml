@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuVerPalabra"
+        android:title="Ver palabra" />
+    <item
+        android:id="@+id/menuAnadirPalabras"
+        android:title="Añadir palabras" />
+    <item
+        android:id="@+id/menuMostrarPalabras"
+        android:title="Mostrar palabras" />
+    <item
+        android:id="@+id/guardarPalabras"
+        android:title="Exportar palabras" />
+    <item
+        android:id="@+id/cargarPalabras"
+        android:title="Importar palabras" />
+    <item
+        android:id="@+id/menuSalirAplicacion"
+        android:title="Salir" />
+</menu>
