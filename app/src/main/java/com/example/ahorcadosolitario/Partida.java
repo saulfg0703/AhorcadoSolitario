@@ -1,9 +1,13 @@
 package com.example.ahorcadosolitario;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,30 +23,52 @@ import java.util.Random;
 public class Partida implements Serializable {
 
     private int intentos;//variable que gestiona los intentos actuales de la partida
-    private ArrayList<String> palabras = new ArrayList<>();
+    private ArrayList<Palabra> palabras;
+    private ArrayList<Palabra> palabrasNuevas;
     private char[] palabraActual;
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
 
-    public Partida(ArrayList<String>palabrasJugar) {
+
+    public Partida(ArrayList<Palabra> pal) {
         //inicializacion arraylist palabras
-        this.palabras = palabrasJugar;
+        palabras = pal;
+        //cargarPalabras();
         //inicio primera partida
         elegirPalabraPartida();
     }
 
-    /**
-     * Metodo para cargar palabras desde java al programa
-     */
 
+
+
+
+    /**
+     * Metodo que descubre letras de la palabra, en funcion de la dificultad de la partida
+     * facil: 1/3 de las letras + 1
+     * Normal: 1/3 de las letras
+     * Dificil: 1/3 de las letras -1
+     */
+    public void descubrirLetras(){
+        int cantidadLetras = (palabraActual.length/2);
+        int i = 0;
+        while(i<cantidadLetras){
+            Random aleatorio = new Random();
+            int numAleatorio = aleatorio.nextInt(palabraActual.length);
+            System.out.println(aleatorio);
+            if(!posicionesAcertadas[numAleatorio]){
+                posicionesAcertadas[numAleatorio]=true;
+                i++;
+            }
+        }
+    }
 
     /**
      * Metodo para anadir al programa las palabras que ha elegido el usuario
      *
      * @param palabrasUsuario array de cadena de caracteres introducido
      */
-    public void cargarPalabrasUsuario(String palabrasUsuario) {
+    public void cargarPalabrasUsuario(Palabra palabrasUsuario) {
         palabras.add(palabrasUsuario);
     }
 
@@ -51,17 +77,14 @@ public class Partida implements Serializable {
      */
     public void elegirPalabraPartida() {
 
-        posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
-        palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
-        posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
-        Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
-        intentos = (palabraActual.length / 2);//actualiza el valor de la partida que se va a jugar
-        mostrarPalabraPartida();//se muestra la palabra seleccionada
-        descubrirLetras();
+            posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
+            palabraActual = palabras.get(posicion).getNombrePalabra().toCharArray();//array caracteres con la palabra
+            posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
+            Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
+            descubrirLetras();
+            intentos = (palabraActual.length / 2);//actualiza el valor de la partida que se va a jugar
+            mostrarPalabraPartida();//se muestra la palabra seleccionada
 
-        for(String palabra: palabras){
-            System.out.println(palabra);
-        }
     }
 
 
@@ -133,13 +156,25 @@ public class Partida implements Serializable {
         }
         return ganado;
     }
-
+    public void palabrasNuevasFicheroTXT(){
+        palabrasNuevas = (ArrayList<Palabra>) palabras.clone();
+        palabrasNuevas.add(new Palabra("mascarilla","Es un dispositivo diseñado para proteger, al portador, de la inhalación de sustancias peligrosas"));
+        palabrasNuevas.add(new Palabra("cojin","Es una especie de almohada cuadrada y ornamentada rellena con lana"));
+        palabrasNuevas.add(new Palabra("gorra","Es un accesorio diseñado y creado para cubrir la cabeza y proteger los ojos de la luz natural"));
+        palabrasNuevas.add(new Palabra("patinete","Es un vehículo/juguete que consiste en una plataforma alargada sobre dos ruedas en línea y una barra de dirección"));
+    }
+    /**
+     * Metodo para guardar las palabras de la partida en un fichero de texto
+     * @param contexto contexto de main activity
+     */
     public void guardarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
+        palabrasNuevasFicheroTXT();
         try (FileOutputStream fos = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE)) {
             FileWriter fw = new FileWriter(fos.getFD());
-            for (int i = 0; i < palabras.size(); i++) {
-                fw.write(palabras.get(i) + "\n");
+            for (int i = 0; i < palabrasNuevas.size(); i++) {
+                //    fw.write(palabras.get(i).getNombrePalabra() + "," + palabras.get(i).getDescripcion() + "\n");
+                fw.write(palabrasNuevas.get(i).getNombrePalabra() + "," + palabrasNuevas.get(i).getDescripcion() + "\n");
             }
             fw.close();
         } catch (FileNotFoundException e) {
@@ -148,42 +183,40 @@ public class Partida implements Serializable {
         }
     }
 
+    /**
+     * Metodo para cargar las palabras de la partida desde un fichero de texto
+     *
+     */
     public void cargarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
         FileInputStream fis = null;
-
         try {
             fis = contexto.openFileInput(nombreArchivo);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
-            String line = reader.readLine();
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            BufferedReader reader = new BufferedReader(inputStreamReader);
             palabras.clear();
+            String line = reader.readLine();
             while (line != null) {
-                palabras.add(line);
+                String[] palabrasRecibidas = line.split(",");
+                palabras.add(new Palabra(palabrasRecibidas[0], palabrasRecibidas[1]));
                 line = reader.readLine();
             }
-        fis.close();
-        } catch (IOException e) {
-            // Error occurred when opening raw file for reading.
+            fis.close();
+            Toast.makeText(contexto, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
+
+
+        }catch (NullPointerException npe){
+            Toast.makeText(contexto, "No existe ningun fichero", Toast.LENGTH_SHORT).show();
+        }catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
-    public void descubrirLetras(){
-        int cantidadLetras = (palabraActual.length/3);
-        int i = 0;
-        while(i<cantidadLetras){
-            Random aleatorio = new Random();
-            int numAleatorio = aleatorio.nextInt(palabraActual.length);
-            System.out.println(aleatorio);
-            if(!posicionesAcertadas[numAleatorio]){
-                posicionesAcertadas[numAleatorio]=true;
-                i++;
-            }
-        }
-    }
+
     //getters y setters
     public int getIntentos() {
         return intentos;
@@ -209,7 +242,7 @@ public class Partida implements Serializable {
         this.palabraActual = palabraActual;
     }
 
-    public ArrayList<String> getPalabras() {
+    public ArrayList<Palabra> getPalabras() {
         return palabras;
     }
 
@@ -217,8 +250,9 @@ public class Partida implements Serializable {
         return posicion;
     }
 
-    public void setPalabras(ArrayList<String> palabras) {
+    public void setPalabras(ArrayList<Palabra> palabras) {
         this.palabras = palabras;
     }
+
 
 }

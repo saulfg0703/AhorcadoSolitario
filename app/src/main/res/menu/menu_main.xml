@@ -11,11 +11,11 @@
         android:id="@+id/menuMostrarPalabras"
         android:title="Mostrar palabras" />
     <item
-        android:id="@+id/guardarPalabras"
-        android:title="Exportar palabras" />
+        android:id="@+id/menuImportarTXT"
+        android:title="Importar TXT" />
     <item
-        android:id="@+id/cargarPalabras"
-        android:title="Importar palabras" />
+        android:id="@+id/menuExportarTXT"
+        android:title="Exportar TXT" />
     <item
         android:id="@+id/menuSalirAplicacion"
         android:title="Salir" />

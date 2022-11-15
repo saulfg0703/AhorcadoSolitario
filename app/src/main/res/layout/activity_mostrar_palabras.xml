@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mostrarPalabras">
+    tools:context=".editarPalabras">
 
     <ListView
         android:id="@+id/listViewPalabras"
@@ -28,6 +28,33 @@
         android:text="volver"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.171"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listViewPalabras" />
+
+    <Button
+        android:id="@+id/administrarSQL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="87dp"
+        android:onClick="administrarSQL"
+        android:text="Administrar SQL"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.764"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listViewPalabras"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/borrarTodas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="borrarTodas"
+        android:text="borrar"
+        app:layout_constraintBottom_toTopOf="@+id/listViewPalabras"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.507" />
 </androidx.constraintlayout.widget.ConstraintLayout>

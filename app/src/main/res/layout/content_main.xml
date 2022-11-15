@@ -10,7 +10,7 @@
 
     android:layout_height="match_parent"
 
-    tools:context="com.example.adivinapalabras.MainActivity"
+    tools:context="com.example.ahorcadosolitario.MainActivity"
 
     tools:layout_editor_absoluteY="81dp">
 
@@ -40,6 +40,7 @@
 
         app:layout_constraintEnd_toEndOf="parent"
 
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nuevo" />
 
@@ -53,7 +54,7 @@
 
         android:layout_marginStart="22dp"
 
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="148dp"
 
         android:layout_marginEnd="8dp"
 
@@ -78,7 +79,9 @@
         app:layout_constraintStart_toStartOf="parent"
 
         app:layout_constraintTop_toBottomOf="@+id/palabra"
+
         tools:ignore="RtlCompat"
+
         tools:singleLine="false" />
 
     <Button
@@ -89,7 +92,7 @@
 
         android:layout_height="50dp"
 
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="148dp"
 
         android:layout_marginEnd="21dp"
 
@@ -168,13 +171,21 @@
         android:id="@+id/palabrasDisponibles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.148"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="68dp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/letra" />
+        app:layout_constraintTop_toBottomOf="@+id/letra" />
+
+    <TextView
+        android:id="@+id/descripcionPalabra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="156dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/palabra" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

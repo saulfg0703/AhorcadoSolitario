@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,17 +14,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView palabrasDisponibles;
     private TextView palabraSeleccionada;
     private TextView intentosRestantes;
-    private TextView numeroPalabrasDisponibles;
+    private TextView descripcionPalabra;
     private Button botonResolver;
     private EditText letraElegida;
     private Button otraPalabra;
@@ -31,43 +33,36 @@ public class MainActivity extends AppCompatActivity {
     private boolean[] palabrasAcertadas;
     private char[] palabra;
     private boolean primeraEjecucion;
+    private ArrayList<Palabra> palabrasInicio;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayList<String>palabrasJugar = new ArrayList<>();
-        palabrasJugar.add("ordenador");
-        palabrasJugar.add("jugar");
-        palabrasJugar.add("monitor");
+
         //inicializacion vistas
         palabraSeleccionada = findViewById(R.id.palabra);
         intentosRestantes = findViewById(R.id.intentos);
         botonResolver = findViewById(R.id.adivinar);
         letraElegida = findViewById(R.id.letra);
         otraPalabra = findViewById(R.id.nuevo);
-        numeroPalabrasDisponibles = findViewById(R.id.palabrasDisponibles);
+        palabrasDisponibles = findViewById(R.id.palabrasDisponibles);
+        descripcionPalabra = findViewById(R.id.descripcionPalabra);
+        palabrasInicio = new ArrayList<>();
+
+        cargaInicial();
         //se crea la partida
-        partida = new Partida(palabrasJugar);
-        //  partida.guardarPalabrasTXT(this);
-        //   partida.cargarPalabrasTXT(this);
-        //   partida.elegirPalabraPartida();
+        partida = new Partida(palabrasInicio);
 
-
-
-        Bundle datos = getIntent().getExtras();
-        if(datos!=null){
-            partida.getPalabras().clear();
-            partida.setPalabras(datos.getStringArrayList("palabrasDevueltas"));
-        }
-
+        actualizarPalabras();
 
         //se realizan acciones de la partida
         mostrarPalabra();
+        mostrarDescripcion();
         calcularIntentos(partida.getIntentos());
-        numeroPalabrasDisponibles.setText(String.valueOf("Numero de palabras: " + partida.getPalabras().size()));
-    }
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,15 +83,17 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuMostrarPalabras:
                 mostrarPalabrasPartida();
                 return true;
+            case R.id.menuImportarTXT:
+                partida.cargarPalabrasTXT(this);
+                actualizarPalabras();
+                return true;
+            case R.id.menuExportarTXT:
+                partida.guardarPalabrasTXT(this);
+                Toast.makeText(this, "Palabras exportadas al fichero de texto", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.menuSalirAplicacion:
                 finish();
                 return true;
-            case R.id.guardarPalabras:
-                partida.guardarPalabrasTXT(this);
-                return true;
-            case R.id.cargarPalabras:
-                partida.cargarPalabrasTXT(this);
-                numeroPalabrasDisponibles.setText(String.valueOf("Numero de palabras: " + partida.getPalabras().size()));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -128,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
             //se muestra la palabra en su estado actual tras elegir letra
             mostrarPalabra();
+            mostrarDescripcion();
 
             //se comprueba si se ha ganado o se ha perdido la partida
             comprobar();
@@ -178,17 +176,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Metodo para actualizar las palabras disponibles en la partida
+     */
+    public void actualizarPalabras(){
+        palabrasDisponibles.setText("Palabras disponibles: "+partida.getPalabras().size());
+    }
+    public void mostrarDescripcion(){
+        try {
+            descripcionPalabra.setText(partida.getPalabras().get(partida.getPosicion()).getDescripcion());
+        }catch(IndexOutOfBoundsException ioobe){
+            Toast.makeText(this, "No hay palabras cargadas para adivinar.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
      * Metodo para jugar otra partida con una palabra aleatoria
      *
      * @param vista boton que ejecuta el evento
      */
     public void otraPartida(View vista) {
-        if (!botonResolver.isEnabled()){
-            botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
+        try {
+            if (!botonResolver.isEnabled()) {
+                botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
+            }
+            partida.elegirPalabraPartida();
+            mostrarPalabra();
+            mostrarDescripcion();
+            calcularIntentos(partida.getIntentos());
+        }catch(IndexOutOfBoundsException ioobe){
+            Toast.makeText(this, "No hay palabras cargadas en el array.", Toast.LENGTH_SHORT).show();
         }
-        partida.elegirPalabraPartida();
-        mostrarPalabra();
-        calcularIntentos(partida.getIntentos());
     }
 
 
@@ -196,21 +213,27 @@ public class MainActivity extends AppCompatActivity {
      * Metodo para anadir palabras a la partida
      */
     public void anadirPalabras(){
+        LinearLayout layout = new LinearLayout(this);
         EditText palabrasIntroducidas = new EditText(this);
+        EditText palabrasDescripcion = new EditText(this);
         AlertDialog.Builder builderPalabras = new AlertDialog.Builder(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(palabrasIntroducidas);
+        layout.addView(palabrasDescripcion);
+        builderPalabras.setView(layout);
         builderPalabras.setTitle("Añadir palabra");
-        builderPalabras.setMessage("Introduzca la palabra que quiere añadir");
-        builderPalabras.setView(palabrasIntroducidas);
+        builderPalabras.setMessage("Introduzca la palabra que quiere añadir y su descripcion");
         builderPalabras.setPositiveButton("Añadir palabra", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String palabrasLeida = palabrasIntroducidas.getText().toString();
+                String palabraDescripcion = palabrasDescripcion.getText().toString();
                 if (palabrasLeida.equals("")) {
                     Toast.makeText(MainActivity.this, "Introduce una palabra", Toast.LENGTH_LONG).show();
                 } else {
-                    partida.cargarPalabrasUsuario(palabrasLeida);
+                    partida.cargarPalabrasUsuario(new Palabra(palabrasLeida,palabraDescripcion));
+                    actualizarPalabras();
                 }
-                numeroPalabrasDisponibles.setText(String.valueOf("Numero de palabras: " + partida.getPalabras().size()));
             }
         });
         AlertDialog dialogPalabras = builderPalabras.create();
@@ -221,13 +244,36 @@ public class MainActivity extends AppCompatActivity {
      * Metodo para mostrar las palabras de la partida en un list view
      */
     public void mostrarPalabrasPartida(){
-        Intent i = new Intent(this,mostrarPalabras.class);
+        int LAUNCH_SECOND_ACTIVITY = 1;
+        Intent i = new Intent(getApplicationContext(), editarPalabras.class);
+        i.putExtra("partida", partida);
+        startActivityForResult(i, LAUNCH_SECOND_ACTIVITY);
+    }
 
-        i.putExtra("partida",partida);
+    public void cargaInicial(){
+        String[]nombrePalabras = {"pantalla","cielo","ordenador"};
+        String[]descripcion = {"Dispositivo de salida que representa visualmente la información.","Espacio en el que se mueven los astros.","Maquina encargada de procesar datos."};
+        for (int i = 0; i < nombrePalabras.length; i++) {
+            palabrasInicio.add(new Palabra(nombrePalabras[i],descripcion[i]));
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
 
-        startActivity(i);
+            if (requestCode == 1) {
+                if (resultCode == Activity.RESULT_OK) {
+                    partida = (Partida) data.getSerializableExtra("partidaNuevaMain");
+                    actualizarPalabras();
+                    palabraSeleccionada.setText("");
+                    descripcionPalabra.setText("");
+                    intentosRestantes.setText("0");
 
-
+                }
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    // Write your code if there's no result
+                }
+            }
     }
 
 }
