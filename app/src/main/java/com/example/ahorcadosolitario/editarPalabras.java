@@ -74,8 +74,11 @@ public class editarPalabras extends AppCompatActivity {
     }
 
     public void administrarSQL(View vista) {
-        Intent i = new Intent(this, FormularioPalabras.class);
-        startActivity(i);
+        int LAUNCH_SECOND_ACTIVITY = 1;
+        Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+        i.putExtra("partida", p);
+        i.putExtra("posicion", -1);
+        startActivityForResult(i, LAUNCH_SECOND_ACTIVITY);
     }
     public void actualizarListView(){
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, p.getPalabras());

@@ -17,6 +17,9 @@
         android:id="@+id/menuExportarTXT"
         android:title="Exportar TXT" />
     <item
+        android:id="@+id/importarSQL"
+        android:title="Importar SQL" />
+    <item
         android:id="@+id/menuSalirAplicacion"
         android:title="Salir" />
 </menu>
