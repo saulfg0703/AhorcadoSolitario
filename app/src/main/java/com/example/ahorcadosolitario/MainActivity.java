@@ -5,8 +5,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private char[] palabra;
     private boolean primeraEjecucion;
     private ArrayList<Palabra> palabrasInicio;
-
+    private BBDD_Asistente dbHelper = new BBDD_Asistente(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuExportarTXT:
                 partida.guardarPalabrasTXT(this);
                 Toast.makeText(this, "Palabras exportadas al fichero de texto", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuImportarSQL:
+                importarSQL();
+                Toast.makeText(this, "Palabras importadas a la partida", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuExportarSQL:
+                exportarSQL();
+                Toast.makeText(this, "Palabras exportadas a la base de datos", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuSalirAplicacion:
                 finish();
@@ -274,6 +285,40 @@ public class MainActivity extends AppCompatActivity {
                     // Write your code if there's no result
                 }
             }
+    }
+    public void importarSQL() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+// Define a projection that specifies which columns from the database
+// you will actually use after this query.
+        String[] projection = {Estructura_Base_De_Datos.NOMBRE_COLUMNA1, Estructura_Base_De_Datos.NOMBRE_COLUMNA2};
+        Cursor cursor = db.query(Estructura_Base_De_Datos.NOMBRE_TABLA,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                null,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        while (cursor.moveToNext()) {
+            String nombre = cursor.getString((cursor.getColumnIndexOrThrow(Estructura_Base_De_Datos.NOMBRE_COLUMNA1)));
+            String descripcion = cursor.getString(cursor.getColumnIndexOrThrow(Estructura_Base_De_Datos.NOMBRE_COLUMNA2));
+            partida.getPalabras().add(new Palabra(nombre,descripcion));
+            actualizarPalabras();
+        }
+        cursor.close();
+    }
+    public void exportarSQL(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+// Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        for (Palabra palabras: partida.getPalabras()) {
+            values.put(Estructura_Base_De_Datos.NOMBRE_COLUMNA1, String.valueOf(palabras.getNombrePalabra()));
+            values.put(Estructura_Base_De_Datos.NOMBRE_COLUMNA2, String.valueOf(palabras.getDescripcion()));
+            db.insert(Estructura_Base_De_Datos.NOMBRE_TABLA,null,values);
+        }
     }
 
 }

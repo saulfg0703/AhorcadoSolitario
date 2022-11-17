@@ -14,8 +14,8 @@ public class Estructura_Base_De_Datos {
     private static final String COMA_SEP = ",";
     protected static final String SQL_CREAR_ENTRADA =
             "CREATE TABLE " + Estructura_Base_De_Datos.NOMBRE_TABLA + " (" +
-                    Estructura_Base_De_Datos.NOMBRE_COLUMNA1 + " ID," +
-                    Estructura_Base_De_Datos.NOMBRE_COLUMNA2 + TIPO_TEXTO + COMA_SEP + " )";
+                    Estructura_Base_De_Datos.NOMBRE_COLUMNA1 + TIPO_TEXTO + COMA_SEP +
+                    Estructura_Base_De_Datos.NOMBRE_COLUMNA2 + TIPO_TEXTO + " )";
 
     protected static final String SQL_BORRAR_ENTRADA =
             "DROP TABLE IF EXISTS " + Estructura_Base_De_Datos.NOMBRE_TABLA;

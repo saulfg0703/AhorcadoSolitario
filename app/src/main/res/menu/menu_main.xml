@@ -10,16 +10,27 @@
     <item
         android:id="@+id/menuMostrarPalabras"
         android:title="Mostrar palabras" />
+
     <item
-        android:id="@+id/menuImportarTXT"
-        android:title="Importar TXT" />
-    <item
-        android:id="@+id/menuExportarTXT"
-        android:title="Exportar TXT" />
-    <item
-        android:id="@+id/importarSQL"
-        android:title="Importar SQL" />
+        android:id="@+id/menuImportar"
+        android:title="Importar">
+        <menu>
+            <item
+                android:id="@+id/menuImportarTXT"
+                android:title="Importar TXT" />
+            <item
+                android:id="@+id/menuExportarTXT"
+                android:title="Exportar TXT" />
+            <item
+                android:id="@+id/menuImportarSQL"
+                android:title="Importar SQL" />
+            <item
+                android:id="@+id/menuExportarSQL"
+                android:title="Exportar SQL" />
+        </menu>
+    </item>
     <item
         android:id="@+id/menuSalirAplicacion"
         android:title="Salir" />
+
 </menu>
