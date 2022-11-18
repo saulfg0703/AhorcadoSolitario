@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +22,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -88,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menuImportarTXT:
                 partida.cargarPalabrasTXT(this);
+                Toast.makeText(this, "Palabras importadas a la partida", Toast.LENGTH_SHORT).show();
                 actualizarPalabras();
                 return true;
             case R.id.menuExportarTXT:
@@ -101,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuExportarSQL:
                 exportarSQL();
                 Toast.makeText(this, "Palabras exportadas a la base de datos", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuImportarObj:
+                importarFicheroObjeto();
+                Toast.makeText(this, "Palabras importadas a la partida", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuExportarObj:
+                exportarFicheroObjeto();
+                Toast.makeText(this, "Palabras exportadas al fichero binario", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuSalirAplicacion:
                 finish();
@@ -318,6 +334,51 @@ public class MainActivity extends AppCompatActivity {
             values.put(Estructura_Base_De_Datos.NOMBRE_COLUMNA1, String.valueOf(palabras.getNombrePalabra()));
             values.put(Estructura_Base_De_Datos.NOMBRE_COLUMNA2, String.valueOf(palabras.getDescripcion()));
             db.insert(Estructura_Base_De_Datos.NOMBRE_TABLA,null,values);
+        }
+        actualizarPalabras();
+    }
+    public void importarFicheroObjeto(){
+        FileInputStream fis = null;
+        try{
+            fis = getApplicationContext().openFileInput("palabras.dat");
+            try{
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                while(true){
+                    try{
+                        Palabra p = (Palabra) ois.readObject();
+                        partida.getPalabras().add(p);
+                    }catch(IOException e){
+                        break;
+                    }catch (ClassNotFoundException cnfe){
+                        cnfe.printStackTrace();
+                    }
+                    actualizarPalabras();
+                }
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public void exportarFicheroObjeto() {
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        try{
+            fos = getApplicationContext().openFileOutput("palabras.dat", Context.MODE_APPEND);
+            try{
+                oos = new ObjectOutputStream(fos);
+                for (Palabra palabrasEscribir: partida.getPalabras()) {
+                    oos.writeObject(palabrasEscribir);
+                }
+
+                oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

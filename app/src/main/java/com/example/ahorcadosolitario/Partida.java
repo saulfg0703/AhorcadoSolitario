@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -216,6 +218,8 @@ public class Partida implements Serializable {
         }
 
     }
+
+
 
     //getters y setters
     public int getIntentos() {
