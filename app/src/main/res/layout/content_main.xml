@@ -179,8 +179,8 @@
 
     <TextView
         android:id="@+id/descripcionPalabra"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="347dp"
+        android:layout_height="70dp"
         android:layout_marginTop="156dp"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,9 @@
 package com.example.ahorcadosolitario;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,7 +14,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +27,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -118,9 +133,14 @@ public class MainActivity extends AppCompatActivity {
                 exportarFicheroObjeto();
                 Toast.makeText(this, "Palabras exportadas al fichero binario", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.menuImportarMongoDB:
+                getMongo();
+                Toast.makeText(this, "Palabras importadas a la partida", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.menuSalirAplicacion:
                 finish();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -183,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(estadoPartida);
         builder.setMessage(estadoPartida + ", acepta para jugar otra partida");
+        builder.setMessage("Has utilizado " + ((partida.getPalabraActual().length/2) - (partida.getIntentos())) + " intentos");
         builder.setPositiveButton("Jugar otra partida", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -380,6 +401,67 @@ public class MainActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+    private void getMongo()
+    { // mongod --port 27017 --dbpath C:\MongoDB\data\db --bind_ip_all
+
+        class GetMONGO extends AsyncTask<Void, Void, String> {
+            //this method will be called before execution
+            //you can display a progress bar or something
+            //so that user can understand that he should wait
+            //as network operation may take some time
+            //Document doc;
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+            //this method will be called after execution
+            //so here we are displaying a toast with the json string
+            @Override
+            protected void onPostExecute(String jsonStr) {
+                super.onPostExecute(jsonStr);
+                actualizarPalabras();
+            }
+            //in this method we are fetching the json string
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    String uri = "mongodb://192.168.167.72:27017";
+                    MongoClient mongoClient = MongoClients.create(uri);
+                    MongoDatabase db = mongoClient.getDatabase("AdivinaPalabras");
+                    MongoCollection<Document> collection = db.getCollection("palabras");
+
+                    collection.find().forEach(doc -> {
+                        System.out.println(doc.toJson());
+                        String nombre = null;
+                        String descripcion= null;
+                        JSONObject jsonObject = new JSONObject(doc);
+                        try {
+                            nombre = jsonObject.getString("nombre");
+                            descripcion = jsonObject.getString("descripcion");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Palabra temp = new Palabra(nombre,descripcion);
+                        partida.getPalabras().add(temp);
+
+
+                    });
+
+                    return uri;
+
+                } catch (Exception e) {e.printStackTrace();e.getMessage();
+                    return null;
+                }
+
+            }
+
+        }
+
+        //creating asynctask object and executing it
+        GetMONGO getMongo = new GetMONGO();
+        getMongo.execute();
+
     }
 
 }

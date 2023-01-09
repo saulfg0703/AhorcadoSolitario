@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FormularioPalabrasSQL">
+    tools:context=".FormularioPalabrasMongo">
 
     <TextView
         android:id="@+id/textView"
@@ -36,6 +36,7 @@
         android:layout_marginTop="56dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,7 +56,7 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="404dp"
-        android:onClick="insertarSQL"
+        android:onClick="insertarMongo"
         android:text="+"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="404dp"
-        android:onClick="buscarSQL"
+        android:onClick="buscarMongo"
         android:text="Buscar"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +108,7 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="404dp"
-        android:onClick="borrarSQL"
+        android:onClick="borrarMongo"
         android:text="-"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +147,7 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="404dp"
-        android:onClick="modificarSQL"
+        android:onClick="modificarMongo"
         android:text="..."
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -159,7 +160,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="360dp"
-        android:text="Gestion SQLite"
+        android:text="Gestion MongoDB"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

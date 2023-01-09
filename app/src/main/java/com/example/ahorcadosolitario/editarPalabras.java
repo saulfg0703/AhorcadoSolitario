@@ -75,10 +75,17 @@ public class editarPalabras extends AppCompatActivity {
 
     public void administrarSQL(View vista) {
         int LAUNCH_SECOND_ACTIVITY = 1;
-        Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+        Intent i = new Intent(getApplicationContext(), FormularioPalabrasSQL.class);
         i.putExtra("partida", p);
         i.putExtra("posicion", -1);
         startActivityForResult(i, LAUNCH_SECOND_ACTIVITY);
+    }
+    public void administrarMongoDB(View vista){
+        int LAUNCH_SECOND_ACTIVITY = 1;
+        Intent i = new Intent(getApplicationContext(),FormularioPalabrasMongo.class);
+        i.putExtra("partida",p);
+        i.putExtra("posicion",-1);
+        startActivityForResult(i,LAUNCH_SECOND_ACTIVITY);
     }
     public void actualizarListView(){
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, p.getPalabras());
@@ -87,7 +94,7 @@ public class editarPalabras extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 int LAUNCH_SECOND_ACTIVITY = 1;
-                Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+                Intent i = new Intent(getApplicationContext(), FormularioPalabrasSQL.class);
                 i.putExtra("partida", p);
                 i.putExtra("posicion", position);
                 startActivityForResult(i, LAUNCH_SECOND_ACTIVITY);

@@ -23,25 +23,38 @@
         android:id="@+id/botonVolver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="87dp"
+        android:layout_marginTop="32dp"
         android:onClick="volverAtras"
         android:text="volver"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.171"
+        app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listViewPalabras" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/administrarSQL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="173dp"
+        android:layout_height="58dp"
         android:layout_marginBottom="87dp"
         android:onClick="administrarSQL"
         android:text="Administrar SQL"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.764"
+        app:layout_constraintHorizontal_bias="0.932"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listViewPalabras"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/administrarMongo"
+        android:layout_width="163dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="87dp"
+        android:onClick="administrarMongoDB"
+        android:text="Administrar MongoDB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listViewPalabras"
         app:layout_constraintVertical_bias="1.0" />
@@ -50,11 +63,11 @@
         android:id="@+id/borrarTodas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:onClick="borrarTodas"
         android:text="borrar"
-        app:layout_constraintBottom_toTopOf="@+id/listViewPalabras"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.135"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.507" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

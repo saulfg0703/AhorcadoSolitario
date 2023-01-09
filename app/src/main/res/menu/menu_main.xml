@@ -24,23 +24,27 @@
             <item
                 android:id="@+id/menuImportarObj"
                 android:title="Importar binario" />
+            <item
+                android:id="@+id/menuImportarMongoDB"
+                android:title="Importar MongoDB" />
         </menu>
     </item>
+    <item
+        android:id="@+id/menuExportar"
+        android:title="Exportar">
+        <menu>
             <item
-                android:id="@+id/menuExportar"
-                android:title="Exportar">
-            <menu>
-                <item
-                    android:id="@+id/menuExportarTXT"
-                    android:title="Exportar TXT" />
-                <item
-                    android:id="@+id/menuExportarSQL"
-                    android:title="Exportar SQL" />
-                <item
-                    android:id="@+id/menuExportarObj"
-                    android:title="Exportar binario" />
-            </menu>
-            </item>
+                android:id="@+id/menuExportarTXT"
+                android:title="Exportar TXT" />
+            <item
+                android:id="@+id/menuExportarSQL"
+                android:title="Exportar SQL" />
+            <item
+                android:id="@+id/menuExportarObj"
+                android:title="Exportar binario" />
+        </menu>
+    </item>
+
 
 
     <item
